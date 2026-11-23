@@ -609,8 +609,8 @@
     const cleanText = text.replace(/<[^>]*>?/gm, '').replace(/["“”]/g, '');
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = 'id-ID';
-    utterance.rate = 0.94;
-    utterance.pitch = 1.08;
+    utterance.rate = 1.02;
+    utterance.pitch = 1.55;
 
     const voices = window.speechSynthesis.getVoices();
     const idVoice = voices.find(v => v.lang.includes('id') || v.lang.includes('ID'));
