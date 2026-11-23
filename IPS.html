@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geo Adventure: Ekspedisi Flora dan Fauna Nusantara</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --hijau-hutan: #246B45;
+      --hijau-gelap: #184A2F;
+      --hijau-muda: #8BCB75;
+      --kuning: #F3C96B;
+      --oranye: #E99555;
+      --oranye-gelap: #C87132;
+      --biru-langit: #83C9DC;
+      --krem: #F6E9CF;
+      --kayu-terang: #C9823E;
+      --kayu-gelap: #7A4419;
+      --teks-gelap: #2B2118;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #133622;
+      color: var(--teks-gelap);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    #app-container {
+      width: 100%;
+      max-width: 1140px;
+      min-height: 675px;
+      background: linear-gradient(180deg, var(--biru-langit) 0%, #BCE6F2 48%, var(--hijau-muda) 49%, var(--hijau-hutan) 100%);
+      border-radius: 24px;
+      border: 8px solid var(--kayu-gelap);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px 26px;
+      transition: background 0.6s ease;
+    }
+
+    #app-container.bg-asiatis { background: linear-gradient(180deg, #69B578 0%, #2E7D4B 55%, #194D2D 100%); }
+    #app-container.bg-peralihan { background: linear-gradient(180deg, #83C9DC 0%, #F3D999 58%, #D69E52 100%); }
+    #app-container.bg-australis { background: linear-gradient(180deg, #5EB5D6 0%, #3E8E63 55%, #1E5638 100%); }
+    #app-container.bg-rusak { background: linear-gradient(180deg, #A39B8B 0%, #7D6B5D 55%, #4A3B32 100%); }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mission-badge {
+      background: var(--krem);
+      border: 4px solid var(--kayu-gelap);
+      border-radius: 50px;
+      padding: 6px 18px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      color: var(--hijau-hutan);
+      box-shadow: 0 4px 0 var(--kayu-gelap);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-tray {
+      background: rgba(246, 233, 207, 0.94);
+      border: 3px solid var(--kayu-gelap);
+      border-radius: 50px;
+      padding: 5px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .badge-slot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #D5C5A8;
+      border: 2px dashed #8C7355;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .badge-slot.unlocked {
+      background: var(--kuning);
+      border: 2px solid var(--kayu-gelap);
+      transform: scale(1.15);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    .wood-board {
+      background: linear-gradient(180deg, #D9944A 0%, #B86F28 100%);
+      border: 5px solid var(--kayu-gelap);
+      border-radius: 22px;
+      box-shadow: 0 8px 0 var(--kayu-gelap), inset 0 3px 0 rgba(255,255,255,0.35);
+      padding: 16px 28px;
+      text-align: center;
+    }
+
+    .wood-title {
+      font-family: 'Fredoka', sans-serif;
+      color: var(--kuning);
+      text-shadow: 3px 3px 0 var(--kayu-gelap), -1px -1px 0 var(--kayu-gelap), 1px -1px 0 var(--kayu-gelap), -1px 1px 0 var(--kayu-gelap);
+      letter-spacing: 1px;
+    }
+
+    .parchment-panel {
+      background: var(--krem);
+      border: 5px solid var(--kayu-gelap);
+      border-radius: 22px;
+      box-shadow: 0 8px 0 rgba(74, 42, 16, 0.4);
+      padding: 18px 22px;
+    }
+
+    .btn {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      padding: 11px 24px;
+      border-radius: 50px;
+      border: 4px solid var(--kayu-gelap);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.2s;
+    }
+
+    .btn:hover { filter: brightness(1.06); transform: translateY(-2px); }
+    .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--kayu-gelap) !important; }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--kuning) 0%, var(--oranye) 100%);
+      color: var(--teks-gelap);
+      box-shadow: 0 5px 0 var(--kayu-gelap);
+    }
+
+    .btn-green {
+      background: linear-gradient(180deg, var(--hijau-muda) 0%, var(--hijau-hutan) 100%);
+      color: #FFFFFF;
+      text-shadow: 1px 1px 0 var(--kayu-gelap);
+      box-shadow: 0 5px 0 var(--kayu-gelap);
+    }
+
+    .btn-secondary {
+      background: var(--krem);
+      color: var(--kayu-gelap);
+      box-shadow: 0 5px 0 var(--kayu-gelap);
+    }
+
+    .btn-audio-inline {
+      background: var(--biru-langit);
+      color: var(--teks-gelap);
+      border: 2.5px solid var(--kayu-gelap);
+      border-radius: 20px;
+      padding: 3px 11px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: 6px;
+      transition: transform 0.15s;
+    }
+
+    .btn-audio-inline:hover {
+      background: var(--kuning);
+      transform: scale(1.05);
+    }
+
+    .btn-small {
+      font-size: 0.9rem;
+      padding: 6px 13px;
+      border-width: 3px;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+      margin: 10px 0;
+      animation: fadeSlideIn 0.35s ease;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bima-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 4px solid var(--hijau-hutan);
+      border-radius: 20px;
+      padding: 10px 18px;
+      max-width: 880px;
+      width: 100%;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      margin-top: 10px;
+    }
+
+    .bima-avatar {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background: var(--kuning);
+      border: 4px solid var(--kayu-gelap);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .bima-speech {
+      font-size: 0.98rem;
+      line-height: 1.4;
+      font-weight: 700;
+      color: var(--teks-gelap);
+      flex: 1;
+    }
+
+    .bima-name {
+      display: inline-block;
+      background: var(--hijau-hutan);
+      color: #fff;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.78rem;
+      padding: 2px 10px;
+      border-radius: 12px;
+      margin-bottom: 4px;
+    }
+
+    /* Kartu Foto Flora & Fauna */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      width: 100%;
+    }
+
+    .bio-card {
+      background: #FFFFFF;
+      border: 4px solid var(--kayu-gelap);
+      border-radius: 18px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 5px 0 var(--kayu-gelap);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bio-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      background: #FFFDF7;
+    }
+
+    .real-photo-thumb {
+      width: 100%;
+      height: 118px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 2px solid #EAE0CC;
+      margin-bottom: 8px;
+      background-color: #FFFFFF;
+      padding: 4px;
+    }
+
+    .preview-strip {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+
+    .preview-strip img {
+      width: 110px;
+      height: 88px;
+      object-fit: contain;
+      background: #FFFFFF;
+      padding: 4px;
+      border-radius: 14px;
+      border: 3px solid var(--kayu-gelap);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    }
+
+    .bio-card h4 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.05rem;
+      color: var(--hijau-hutan);
+    }
+
+    .tag-hint {
+      font-size: 0.78rem;
+      background: var(--krem);
+      padding: 2px 10px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-top: 4px;
+      color: var(--kayu-gelap);
+      font-weight: 800;
+    }
+
+    /* Bingkai Peta Indonesia */
+    .indo-map-frame {
+      width: 100%;
+      max-width: 900px;
+      background: #B9E5F8;
+      border: 4px solid #1C2B33;
+      border-radius: 20px;
+      padding: 6px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .map-zone-interactive {
+      cursor: pointer;
+      transition: filter 0.2s ease, transform 0.2s ease;
+    }
+    .map-zone-interactive:hover {
+      filter: brightness(1.07) drop-shadow(0 4px 6px rgba(0,0,0,0.25));
+    }
+
+    /* Pilihan Kuis */
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .option-card {
+      background: #FFFFFF;
+      border: 4px solid var(--kayu-gelap);
+      border-radius: 18px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.05rem;
+      box-shadow: 0 5px 0 var(--kayu-gelap);
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .option-card img {
+      width: 100%;
+      height: 112px;
+      object-fit: contain;
+      background: #FFFFFF;
+      padding: 4px;
+      border-radius: 12px;
+      border: 2px solid #E2D8C3;
+      margin-bottom: 8px;
+    }
+
+    .option-card:hover {
+      background: var(--kuning);
+      transform: translateY(-3px);
+    }
+
+    /* Indikator Step Tantangan 3 Soal */
+    .step-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .step-dot {
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.85rem;
+      background: #E2D3B5;
+      border: 2px solid var(--kayu-gelap);
+      color: var(--kayu-gelap);
+    }
+    .step-dot.active {
+      background: var(--kuning);
+      transform: scale(1.06);
+    }
+    .step-dot.done {
+      background: var(--hijau-muda);
+      color: #184A2F;
+    }
+
+    /* Modal Pop-up */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.68);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: var(--krem);
+      border: 6px solid var(--kayu-gelap);
+      border-radius: 26px;
+      max-width: 520px;
+      width: 100%;
+      padding: 22px;
+      text-align: center;
+      box-shadow: 0 12px 0 var(--kayu-gelap);
+      animation: popUp 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-photo {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      background: #FFFFFF;
+      padding: 6px;
+      border-radius: 16px;
+      border: 4px solid var(--kayu-gelap);
+      margin-bottom: 12px;
+    }
+
+    @keyframes popUp {
+      from { transform: scale(0.82); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .vehicle-float {
+      font-size: 4rem;
+      display: inline-block;
+      animation: bobbing 2.2s ease-in-out infinite;
+    }
+
+    @keyframes bobbing {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(3deg); }
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      gap: 12px;
+    }
+
+    .progress-bar-wrap {
+      flex: 1;
+      max-width: 340px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 3px solid var(--kayu-gelap);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--kuning), var(--oranye));
+      width: 5%;
+      transition: width 0.4s ease;
+    }
+
+    @media (max-width: 768px) {
+      #app-container { border-radius: 0; border-width: 4px; min-height: 100vh; padding: 12px; }
+      .cards-grid { grid-template-columns: repeat(2, 1fr); }
+      .bima-box { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app-container">
+  <header>
+    <div class="mission-badge" id="mission-indicator">
+      <span>🧭</span> <span id="mission-text">Halaman Utama</span>
+    </div>
+
+    <div class="hud-right">
+      <div class="badge-tray" title="Koleksi Lencana Petualangan">
+        <span>Lencana:</span>
+        <div class="badge-slot" id="badge-asiatis" title="Penjelajah Asiatis">🐅</div>
+        <div class="badge-slot" id="badge-peralihan" title="Penjelajah Peralihan">🦎</div>
+        <div class="badge-slot" id="badge-australis" title="Penjelajah Australis">🦜</div>
+        <div class="badge-slot" id="badge-alam" title="Penjaga Alam">🌱</div>
+      </div>
+      <button class="btn btn-secondary btn-small" onclick="toggleAutoNarration()" id="narration-toggle-btn" title="Aktifkan/Matikan Narasi Suara Otomatis">🗣️ Suara: ON</button>
+      <button class="btn btn-secondary btn-small" onclick="toggleSound()" id="sound-btn" title="Efek Suara">🔊</button>
+    </div>
+  </header>
+
+  <main id="slide-content"></main>
+
+  <footer id="footer-nav">
+    <button class="btn btn-secondary" id="btn-prev" onclick="prevSlide()">⬅️ Kembali</button>
+    <div class="progress-bar-wrap">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <button class="btn btn-primary" id="btn-next" onclick="nextSlide()">Lanjut ➡️</button>
+  </footer>
+</div>
+
+<!-- MODAL POP-UP -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box" id="modal-box">
+    <img id="modal-img" class="modal-photo" src="" alt="Visual Nyata" style="display:none;" />
+    <div id="modal-icon" style="font-size: 3.6rem; margin-bottom: 8px; display:none;">🌿</div>
+    <h2 id="modal-title" style="font-family: 'Fredoka', sans-serif; color: var(--hijau-hutan); margin-bottom: 8px;">Judul</h2>
+    <p id="modal-desc" style="font-size: 1.05rem; line-height: 1.5; margin-bottom: 14px; font-weight: 700;">Deskripsi</p>
+    <div style="margin-bottom: 16px;">
+      <button class="btn-audio-inline" id="modal-speak-btn" style="font-size:0.95rem; padding:6px 14px;">🔊 Dengarkan Penjelasan</button>
+    </div>
+    <div id="modal-actions"></div>
+  </div>
+</div>
+
+<script>
+  /* ================= AUDIO ENGINE & NARASI SUARA INDONESIA ================= */
+  let soundEnabled = true;
+  let autoNarration = true;
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playTone(freq, type = 'sine', duration = 0.15, delay = 0) {
+    if (!soundEnabled) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(audioCtx.currentTime + delay);
+    osc.stop(audioCtx.currentTime + delay + duration);
+  }
+
+  function sfxClick() { playTone(520, 'triangle', 0.09); }
+  function sfxCorrect() {
+    playTone(523.25, 'sine', 0.15, 0);
+    playTone(659.25, 'sine', 0.15, 0.12);
+    playTone(783.99, 'sine', 0.25, 0.24);
+  }
+  function sfxWrong() {
+    playTone(300, 'sawtooth', 0.2, 0);
+    playTone(230, 'sawtooth', 0.28, 0.18);
+  }
+  function sfxMagic() {
+    [440, 554, 659, 880].forEach((f, i) => playTone(f, 'sine', 0.2, i * 0.08));
+  }
+
+  function speakText(text, force = false) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    if (!soundEnabled) return;
+    if (!autoNarration && !force) return;
+
+    const cleanText = text.replace(/<[^>]*>?/gm, '').replace(/["“”]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'id-ID';
+    utterance.rate = 0.94;
+    utterance.pitch = 1.08;
+
+    const voices = window.speechSynthesis.getVoices();
+    const idVoice = voices.find(v => v.lang.includes('id') || v.lang.includes('ID'));
+    if (idVoice) utterance.voice = idVoice;
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
+
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    if (!soundEnabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    document.getElementById('sound-btn').textContent = soundEnabled ? '🔊' : '🔇';
+  }
+
+  function toggleAutoNarration() {
+    autoNarration = !autoNarration;
+    if (!autoNarration && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    document.getElementById('narration-toggle-btn').textContent = autoNarration ? '🗣️ Suara: ON' : '🗣️ Suara: OFF';
+  }
+
+  function makeFallbackSVG(label, bgColor = "#246B45") {
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='260' viewBox='0 0 400 260'>
+      <rect width='400' height='260' fill='${bgColor}'/>
+      <text x='50%' y='45%' dominant-baseline='middle' text-anchor='middle' fill='#F6E9CF' font-family='sans-serif' font-weight='bold' font-size='20'>${label}</text>
+      <text x='50%' y='62%' dominant-baseline='middle' text-anchor='middle' fill='#F3C96B' font-family='sans-serif' font-size='14'>(Simpan file di folder assets/)</text>
+    </svg>`;
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  }
+
+  function getBimaSVG(expression = 'happy') {
+    const mouth = expression === 'surprised'
+      ? `<circle cx="50" cy="67" r="5" fill="#7A2E1D"/>`
+      : expression === 'curious'
+      ? `<path d="M44 66 Q50 63 56 66" stroke="#7A2E1D" stroke-width="3" fill="none" stroke-linecap="round"/>`
+      : `<path d="M41 63 Q50 73 59 63 Z" fill="#D94E4E" stroke="#7A2E1D" stroke-width="2"/>`;
+
+    return `
+      <svg viewBox="0 0 100 100" width="60" height="60">
+        <circle cx="50" cy="50" r="48" fill="#F3C96B"/>
+        <path d="M25 95 C25 76, 75 76, 75 95" fill="#246B45"/>
+        <path d="M35 80 L50 92 L65 80" fill="#F6E9CF"/>
+        <circle cx="50" cy="52" r="23" fill="#FAD2B1"/>
+        <path d="M27 46 C27 28, 73 28, 73 46 C68 38, 32 38, 27 46 Z" fill="#3A2314"/>
+        <ellipse cx="50" cy="33" rx="34" ry="8" fill="#C9823E" stroke="#7A4419" stroke-width="2"/>
+        <path d="M31 33 C31 18, 69 18, 69 33 Z" fill="#E09E56" stroke="#7A4419" stroke-width="2"/>
+        <rect x="31" y="29" width="38" height="4" fill="#246B45"/>
+        <circle cx="42" cy="51" r="3.2" fill="#2B2118"/>
+        <circle cx="58" cy="51" r="3.2" fill="#2B2118"/>
+        <circle cx="43" cy="50" r="1" fill="#FFF"/>
+        <circle cx="59" cy="50" r="1" fill="#FFF"/>
+        <circle cx="36" cy="57" r="3" fill="#F29B7E" opacity="0.7"/>
+        <circle cx="64" cy="57" r="3" fill="#F29B7E" opacity="0.7"/>
+        ${mouth}
+      </svg>
+    `;
+  }
+
+  function renderBimaDialogue(expression, text) {
+    const safeSpeak = text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    return `
+      <div class="bima-box">
+        <div class="bima-avatar">${getBimaSVG(expression)}</div>
+        <div class="bima-speech">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+            <span class="bima-name">Bima - Penjelajah Cilik</span>
+            <button class="btn-audio-inline" onclick="speakText('${safeSpeak}', true)">🔊 Dengarkan Bima</button>
+          </div>
+          <div>${text}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ================= DATABASE 21 FOTO LOKAL DI FOLDER assets/ ================= */
+  const bioData = {
+    // 1. WILAYAH BARAT / ASIATIS (6 FILE)
+    rafflesia: {
+      img: "assets/rafflesia.jpg",
+      title: "Rafflesia Arnoldii (Flora Asiatis)",
+      desc: "Bunga Rafflesia adalah tumbuhan raksasa asli hutan Sumatra. Bunganya berwarna merah berbintik putih, tidak memiliki daun atau batang, dan mengeluarkan aroma khas untuk menarik lalat penyerbuk."
+    },
+    meranti: {
+      img: "assets/meranti.jpg",
+      title: "Pohon Meranti (Flora Asiatis)",
+      desc: "Pohon Meranti adalah pohon tinggi menjulang di hutan hujan tropis Sumatra dan Kalimantan. Batangnya lurus dan kayunya kuat, serta menjadi tempat tinggal burung dan kera."
+    },
+    rotan: {
+      img: "assets/rotan.jpg",
+      title: "Tumbuhan Rotan (Flora Asiatis)",
+      desc: "Rotan adalah tumbuhan merambat berduri yang tumbuh subur di hutan Kalimantan dan Sumatra. Batangnya yang lentur sering dimanfaatkan warga untuk membuat kursi dan keranjang."
+    },
+    orangutan: {
+      img: "assets/orangutan.jpg",
+      title: "Orangutan (Fauna Asiatis)",
+      desc: "Orangutan adalah kera besar berambut cokelat kemerahan yang hidup di pepohonan hutan Sumatra dan Kalimantan. Lengannya sangat panjang untuk berayun dari dahan ke dahan."
+    },
+    harimau: {
+      img: "assets/harimau.jpg",
+      title: "Harimau Sumatra (Fauna Asiatis)",
+      desc: "Harimau Sumatra adalah kucing besar asli Pulau Sumatra yang memiliki kulit loreng oranye dan hitam. Harimau ini pandai berenang dan menjaga keseimbangan rantai makanan di hutan."
+    },
+    gajah: {
+      img: "assets/gajah.jpg",
+      title: "Gajah Sumatra (Fauna Asiatis)",
+      desc: "Gajah Sumatra adalah mamalia darat besar bertubuh gagah dengan belalai panjang dan telinga lebih kecil dibanding gajah Afrika. Mereka hidup berkelompok di hutan Sumatra."
+    },
+
+    // 2. WILAYAH TENGAH / PERALIHAN (6 FILE)
+    cendana: {
+      img: "assets/cendana.jpg",
+      title: "Pohon Cendana (Flora Peralihan)",
+      desc: "Pohon Cendana tumbuh di wilayah Nusa Tenggara Timur. Kayunya menghasilkan aroma wangi alami yang digunakan untuk bahan parfum, kerajinan, dan minyak wangi."
+    },
+    eboni: {
+      img: "assets/eboni.jpg",
+      title: "Pohon Eboni / Kayu Hitam (Flora Peralihan)",
+      desc: "Pohon Eboni adalah tumbuhan endemik Sulawesi. Disebut kayu hitam karena bagian dalam kayunya berwarna hitam pekat, sangat keras, dan awet."
+    },
+    lontar: {
+      img: "assets/lontar.jpg",
+      title: "Pohon Lontar (Flora Peralihan)",
+      desc: "Pohon Lontar adalah jenis palem yang tahan cuaca kering di Nusa Tenggara dan Sulawesi. Daunnya lebar seperti kipas, dan niranya bisa diolah menjadi gula merah."
+    },
+    komodo: {
+      img: "assets/komodo.jpg",
+      title: "Komodo (Fauna Peralihan)",
+      desc: "Komodo adalah kadal terbesar di dunia yang hanya hidup alami di Pulau Komodo, Rinca, dan Flores di Nusa Tenggara Timur. Lidahnya bercabang untuk mencium bau mangsa."
+    },
+    anoa: {
+      img: "assets/anoa.jpg",
+      title: "Anoa (Fauna Peralihan)",
+      desc: "Anoa adalah hewan endemik Pulau Sulawesi yang bentuknya mirip kerbau tetapi bertubuh kecil atau kerdil. Anoa memiliki tanduk lurus meruncing ke belakang."
+    },
+    maleo: {
+      img: "assets/maleo.jpg",
+      title: "Burung Maleo (Fauna Peralihan)",
+      desc: "Burung Maleo berasal dari Sulawesi dan memiliki jambul keras berwarna hitam di kepalanya. Uniknya, burung ini mengubur telurnya di pasir pantai yang hangat agar menetas."
+    },
+
+    // 3. WILAYAH TIMUR / AUSTRALIS (6 FILE)
+    sagu: {
+      img: "assets/sagu.jpg",
+      title: "Pohon Sagu (Flora Australis)",
+      desc: "Pohon Sagu tumbuh subur di daerah rawa Papua dan Maluku. Batangnya menyimpan tepung sagu yang menjadi bahan makanan pokok seperti papeda."
+    },
+    matoa: {
+      img: "assets/matoa.jpg",
+      title: "Pohon Matoa (Flora Australis)",
+      desc: "Matoa adalah pohon buah khas Papua. Buahnya berbentuk lonjong dengan kulit hijau kecokelatan dan daging buah manis beraroma seperti kelengkeng dan durian."
+    },
+    eukaliptus: {
+      img: "assets/eukaliptus.jpg",
+      title: "Pohon Eukaliptus (Flora Australis)",
+      desc: "Eukaliptus tumbuh di Papua dan wilayah Indonesia bagian timur. Kulit batangnya unik berwarna-warni dan daunnya menghasilkan minyak kayu putih yang harum."
+    },
+    cenderawasih: {
+      img: "assets/cenderawasih.jpg",
+      title: "Burung Cenderawasih (Fauna Australis)",
+      desc: "Burung Cenderawasih dijuluki Burung Surga dari Papua. Pejantannya memiliki bulu panjang berwarna kuning, merah, dan cokelat yang sangat indah."
+    },
+    kasuari: {
+      img: "assets/kasuari.jpg",
+      title: "Burung Kasuari (Fauna Australis)",
+      desc: "Kasuari adalah burung berukuran besar dari hutan Papua yang tidak bisa terbang. Di atas kepalanya terdapat jambul keras seperti helm dan kakinya sangat kuat."
+    },
+    kanguru: {
+      img: "assets/kanguru.jpg",
+      title: "Kanguru Pohon (Fauna Australis)",
+      desc: "Kanguru Pohon adalah hewan berkantung dari hutan Papua. Berbeda dengan kanguru padang rumput, kanguru ini pandai memanjat dan tinggal di atas dahan pohon."
+    },
+
+    // 4. LINGKUNGAN LOKAL SEKITAR PURWOREJO (3 FILE)
+    sawah: {
+      img: "assets/sawah.jpg",
+      title: "Persawahan dan Tanaman Padi",
+      desc: "Di lingkungan sekitar Purworejo, hamparan sawah hijau ditanami padi sebagai sumber pangan. Di sawah juga hidup katak, capung, belalang, dan burung kuntul."
+    },
+    kebun: {
+      img: "assets/kebun.jpg",
+      title: "Pohon Kelapa dan Rumpun Bambu",
+      desc: "Di kebun dan pekarangan sekitar rumah kita banyak tumbuh pohon kelapa dan bambu yang bermanfaat bagi warga serta menjadi tempat bersarang berbagai burung."
+    },
+    sungai: {
+      img: "assets/sungai.jpg",
+      title: "Perbukitan Menoreh dan Aliran Sungai",
+      desc: "Perbukitan hijau dan sungai yang bersih di sekitar kita menyediakan air jernih bagi tanaman, ikan air tawar, serta menjaga udara tetap sejuk."
+    }
+  };
+
+  /* ================= BANK SOAL TANTANGAN WILAYAH (MASING-MASING 3 SOAL + GAMBAR LOKAL) ================= */
+  const regionChallenges = {
+    1: {
+      badgeTitle: "TANTANGAN WILAYAH ASIATIS",
+      badgeColor: "var(--oranye)",
+      badgeKey: "asiatis",
+      nextSlide: 9,
+      bimaHint: '"Selesaikan ketiga tantangan wilayah Barat (Asiatis) ini untuk mendapatkan Lencana Penjelajah Asiatis!"',
+      questions: [
+        {
+          question: "Manakah hewan yang termasuk fauna khas wilayah Asiatis?",
+          speak: "Soal 1 dari 3. Manakah hewan yang termasuk fauna khas wilayah Asiatis? A. Komodo, B. Orangutan, atau C. Cenderawasih?",
+          options: [
+            { label: "A. Komodo", img: "assets/komodo.jpg", fallback: "komodo.jpg", correct: false, feedback: "Komodo berasal dari wilayah Peralihan di Nusa Tenggara. Coba ingat kembali hewan di Sumatra dan Kalimantan!" },
+            { label: "B. Orangutan", img: "assets/orangutan.jpg", fallback: "orangutan.jpg", correct: true, feedback: "Benar sekali! Orangutan adalah fauna khas wilayah Asiatis di Sumatra dan Kalimantan. Lanjut ke soal ke-2!" },
+            { label: "C. Cenderawasih", img: "assets/cenderawasih.jpg", fallback: "cenderawasih.jpg", correct: false, feedback: "Burung Cenderawasih berasal dari Papua di wilayah Australis. Ayo pilih sekali lagi!" }
+          ]
+        },
+        {
+          question: "Tumbuhan bunga raksasa berwarna merah berbintik putih khas wilayah Asiatis adalah ...",
+          speak: "Soal 2 dari 3. Tumbuhan bunga raksasa berwarna merah berbintik putih khas wilayah Asiatis adalah... A. Pohon Sagu, B. Pohon Cendana, atau C. Rafflesia Arnoldii?",
+          options: [
+            { label: "A. Pohon Sagu", img: "assets/sagu.jpg", fallback: "sagu.jpg", correct: false, feedback: "Pohon Sagu tumbuh subur di Papua dan Maluku (wilayah Australis). Coba cari bunga raksasa dari Sumatra!" },
+            { label: "B. Pohon Cendana", img: "assets/cendana.jpg", fallback: "cendana.jpg", correct: false, feedback: "Pohon Cendana berasal dari Nusa Tenggara di wilayah Peralihan. Ayo coba lagi!" },
+            { label: "C. Rafflesia Arnoldii", img: "assets/rafflesia.jpg", fallback: "rafflesia.jpg", correct: true, feedback: "Hebat! Rafflesia Arnoldii adalah flora raksasa khas hutan Sumatra di wilayah Asiatis. Tinggal satu soal lagi!" }
+          ]
+        },
+        {
+          question: "Pulau-pulau berikut ini yang termasuk dalam wilayah persebaran Asiatis adalah ...",
+          speak: "Soal 3 dari 3. Pulau-pulau berikut ini yang termasuk dalam wilayah persebaran Asiatis adalah... A. Sumatra, Jawa, Kalimantan, dan Bali, B. Sulawesi dan Nusa Tenggara, atau C. Maluku dan Papua?",
+          options: [
+            { label: "A. Sumatra, Jawa, Kalimantan, Bali", img: "assets/peta_asiatis.jpg", fallback: "peta_asiatis.jpg", correct: true, feedback: "Luar biasa! Kamu berhasil menuntaskan 3 tantangan wilayah Asiatis dan meraih Lencana Penjelajah Asiatis!" },
+            { label: "B. Sulawesi dan Nusa Tenggara", img: "assets/peta_peralihan.jpg", fallback: "peta_peralihan.jpg", correct: false, feedback: "Sulawesi dan Nusa Tenggara termasuk wilayah Tengah atau Peralihan. Ingat bagian barat Indonesia!" },
+            { label: "C. Maluku dan Papua", img: "assets/peta_australis.jpg", fallback: "peta_australis.jpg", correct: false, feedback: "Maluku dan Papua berada di bagian timur (wilayah Australis). Coba pilih pulau di bagian barat!" }
+          ]
+        }
+      ]
+    },
+    2: {
+      badgeTitle: "TANTANGAN WILAYAH PERALIHAN",
+      badgeColor: "var(--oranye)",
+      badgeKey: "peralihan",
+      nextSlide: 12,
+      bimaHint: '"Ingat kembali kekayaan alam Sulawesi dan Nusa Tenggara untuk menyelesaikan 3 tantangan ini!"',
+      questions: [
+        {
+          question: "Hewan reptil raksasa yang menjadi salah satu ciri khas wilayah Peralihan adalah ...",
+          speak: "Soal 1 dari 3. Hewan reptil raksasa yang menjadi salah satu ciri khas wilayah Peralihan adalah... A. Komodo, B. Orangutan, atau C. Gajah Sumatra?",
+          options: [
+            { label: "A. Komodo", img: "assets/komodo.jpg", fallback: "komodo.jpg", correct: true, feedback: "Tepat! Komodo adalah kadal raksasa khas wilayah Peralihan di Nusa Tenggara. Ayo lanjut ke soal ke-2!" },
+            { label: "B. Orangutan", img: "assets/orangutan.jpg", fallback: "orangutan.jpg", correct: false, feedback: "Orangutan termasuk fauna wilayah Asiatis. Coba ingat hewan yang tinggal di Nusa Tenggara!" },
+            { label: "C. Gajah Sumatra", img: "assets/gajah.jpg", fallback: "gajah.jpg", correct: false, feedback: "Gajah Sumatra berasal dari wilayah Asiatis bagian barat. Coba pilih lagi!" }
+          ]
+        },
+        {
+          question: "Hewan endemik Pulau Sulawesi yang bentuknya mirip kerbau bertubuh kecil adalah ...",
+          speak: "Soal 2 dari 3. Hewan endemik Pulau Sulawesi yang bentuknya mirip kerbau bertubuh kecil adalah... A. Harimau Sumatra, B. Anoa, atau C. Kanguru Pohon?",
+          options: [
+            { label: "A. Harimau Sumatra", img: "assets/harimau.jpg", fallback: "harimau.jpg", correct: false, feedback: "Harimau Sumatra adalah kucing besar dari wilayah Asiatis. Cari hewan khas Sulawesi!" },
+            { label: "B. Anoa", img: "assets/anoa.jpg", fallback: "anoa.jpg", correct: true, feedback: "Benar sekali! Anoa adalah hewan endemik Sulawesi yang mirip kerbau kerdil. Siap untuk soal ke-3?" },
+            { label: "C. Kanguru Pohon", img: "assets/kanguru.jpg", fallback: "kanguru.jpg", correct: false, feedback: "Kanguru Pohon berasal dari hutan Papua (Australis). Ayo pilih hewan dari Sulawesi!" }
+          ]
+        },
+        {
+          question: "Tumbuhan khas wilayah Peralihan yang kayunya beraroma harum alami adalah ...",
+          speak: "Soal 3 dari 3. Tumbuhan khas wilayah Peralihan yang kayunya beraroma harum alami adalah... A. Tumbuhan Rotan, B. Pohon Meranti, atau C. Pohon Cendana?",
+          options: [
+            { label: "A. Tumbuhan Rotan", img: "assets/rotan.jpg", fallback: "rotan.jpg", correct: false, feedback: "Rotan tumbuh subur di hutan Sumatra dan Kalimantan (Asiatis). Coba ingat pohon wangi dari Nusa Tenggara!" },
+            { label: "B. Pohon Meranti", img: "assets/meranti.jpg", fallback: "meranti.jpg", correct: false, feedback: "Pohon Meranti adalah pohon tinggi dari wilayah Asiatis. Pilih pohon khas Nusa Tenggara!" },
+            { label: "C. Pohon Cendana", img: "assets/cendana.jpg", fallback: "cendana.jpg", correct: true, feedback: "Sempurna! Ketiga tantangan wilayah Peralihan berhasil diselesaikan dan kamu meraih Lencana Penjelajah Peralihan!" }
+          ]
+        }
+      ]
+    },
+    3: {
+      badgeTitle: "TANTANGAN WILAYAH AUSTRALIS",
+      badgeColor: "#6B46C1",
+      badgeKey: "australis",
+      nextSlide: 15,
+      bimaHint: '"Tunjukkan ingatanmu tentang flora dan fauna khas Maluku dan Papua pada 3 soal ini!"',
+      questions: [
+        {
+          question: "Di wilayah manakah burung cenderawasih yang berbulu indah dapat ditemukan?",
+          speak: "Soal 1 dari 3. Di wilayah manakah burung cenderawasih yang berbulu indah dapat ditemukan? A. Asiatis, B. Peralihan, atau C. Australis?",
+          options: [
+            { label: "A. Asiatis", img: "assets/peta_asiatis.jpg", fallback: "peta_asiatis.jpg", correct: false, feedback: "Wilayah Asiatis berada di bagian barat Indonesia. Burung Cenderawasih berasal dari Papua!" },
+            { label: "B. Peralihan", img: "assets/peta_peralihan.jpg", fallback: "peta_peralihan.jpg", correct: false, feedback: "Wilayah Peralihan berada di bagian tengah Indonesia. Coba pilih wilayah bagian timur!" },
+            { label: "C. Australis", img: "assets/peta_australis.jpg", fallback: "peta_australis.jpg", correct: true, feedback: "Luar biasa! Burung Cenderawasih adalah kebanggaan Papua di wilayah Australis. Lanjut ke soal ke-2!" }
+          ]
+        },
+        {
+          question: "Tumbuhan khas Papua dan Maluku yang batangnya diolah menjadi tepung makanan pokok adalah ...",
+          speak: "Soal 2 dari 3. Tumbuhan khas Papua dan Maluku yang batangnya diolah menjadi tepung makanan pokok adalah... A. Pohon Sagu, B. Pohon Lontar, atau C. Pohon Eboni?",
+          options: [
+            { label: "A. Pohon Sagu", img: "assets/sagu.jpg", fallback: "sagu.jpg", correct: true, feedback: "Betul! Batang pohon sagu menghasilkan tepung sagu untuk membuat papeda di Maluku dan Papua. Tinggal satu soal lagi!" },
+            { label: "B. Pohon Lontar", img: "assets/lontar.jpg", fallback: "lontar.jpg", correct: false, feedback: "Pohon Lontar banyak tumbuh di Nusa Tenggara (Peralihan). Cari tumbuhan rawa khas Papua!" },
+            { label: "C. Pohon Eboni", img: "assets/eboni.jpg", fallback: "eboni.jpg", correct: false, feedback: "Pohon Eboni atau kayu hitam berasal dari Sulawesi (Peralihan). Ayo coba lagi!" }
+          ]
+        },
+        {
+          question: "Burung besar tidak bisa terbang dari Papua yang memiliki jambul keras di kepalanya adalah ...",
+          speak: "Soal 3 dari 3. Burung besar tidak bisa terbang dari Papua yang memiliki jambul keras di kepalanya adalah... A. Burung Maleo, B. Burung Kasuari, atau C. Anoa?",
+          options: [
+            { label: "A. Burung Maleo", img: "assets/maleo.jpg", fallback: "maleo.jpg", correct: false, feedback: "Burung Maleo berasal dari Sulawesi (Peralihan). Pilih burung besar dari hutan Papua!" },
+            { label: "B. Burung Kasuari", img: "assets/kasuari.jpg", fallback: "kasuari.jpg", correct: true, feedback: "Hebat sekali! Ketiga tantangan wilayah Australis tuntas dan kamu meraih Lencana Penjelajah Australis!" },
+            { label: "C. Anoa", img: "assets/anoa.jpg", fallback: "anoa.jpg", correct: false, feedback: "Anoa adalah mamalia kecil dari Sulawesi, bukan burung dari Papua. Coba pilih lagi!" }
+          ]
+        }
+      ]
+    },
+    4: {
+      badgeTitle: "TANTANGAN PELESTARIAN ALAM",
+      badgeColor: "var(--hijau-hutan)",
+      badgeKey: "alam",
+      nextSlide: 18,
+      bimaHint: '"Selesaikan 3 soal kepedulian lingkungan ini untuk membuktikan kamu layak menjadi Penjaga Alam!"',
+      questions: [
+        {
+          question: "Manakah tindakan yang dapat membantu melestarikan flora dan fauna?",
+          speak: "Soal 1 dari 3. Manakah tindakan yang dapat membantu melestarikan flora dan fauna? A. Memburu hewan liar, B. Menebang pohon sembarangan, atau C. Menanam pohon dan menjaga habitat hewan?",
+          options: [
+            { label: "A. Memburu hewan liar", img: "assets/pemburu.jpg", fallback: "pemburu.jpg", correct: false, feedback: "Memburu hewan liar membuat populasi hewan menurun dan terancam punah. Pilih tindakan yang melindungi alam!" },
+            { label: "B. Menebang pohon sembarangan", img: "assets/tebang_pohon.jpg", fallback: "tebang_pohon.jpg", correct: false, feedback: "Menebang pohon sembarangan merusak hutan yang menjadi rumah bagi banyak satwa. Ayo pilih tindakan yang baik!" },
+            { label: "C. Menanam pohon & menjaga habitat", img: "assets/tanam_pohon.jpg", fallback: "tanam_pohon.jpg", correct: true, feedback: "Hebat! Menanam pohon menjaga ketersediaan makanan dan tempat tinggal flora dan fauna. Lanjut soal ke-2!" }
+          ]
+        },
+        {
+          question: "Apa akibatnya jika hutan terus ditebang secara liar dan dibakar?",
+          speak: "Soal 2 dari 3. Apa akibatnya jika hutan terus ditebang secara liar dan dibakar? A. Hewan kehilangan tempat tinggal dan terancam punah, B. Sungai menjadi semakin jernih, atau C. Tumbuhan tumbuh semakin banyak?",
+          options: [
+            { label: "A. Hewan kehilangan tempat tinggal", img: "assets/hewan_kehilangan_rumah.jpg", fallback: "hewan_kehilangan_rumah.jpg", correct: true, feedback: "Tepat sekali! Kerusakan hutan membuat satwa kehilangan rumah dan sumber makanan. Siap untuk soal terakhir?" },
+            { label: "B. Sungai menjadi semakin jernih", img: "assets/sungai_jernih.jpg", fallback: "sungai_jernih.jpg", correct: false, feedback: "Sebaliknya, hutan yang gundul menyebabkan tanah mudah longsor dan air sungai menjadi keruh. Coba lagi!" },
+            { label: "C. Tumbuhan tumbuh semakin banyak", img: "assets/tanam_pohon.jpg", fallback: "tanam_pohon.jpg", correct: false, feedback: "Pembakaran hutan justru memusnahkan berbagai jenis tumbuhan langka. Pilih jawaban yang tepat!" }
+          ]
+        },
+        {
+          question: "Contoh perilaku menjaga kelestarian alam di lingkungan sekitar kita adalah ...",
+          speak: "Soal 3 dari 3. Contoh perilaku menjaga kelestarian alam di lingkungan sekitar kita adalah... A. Membuang sampah plastik ke sungai, B. Merawat tanaman dan menjaga lingkungan, atau C. Menebang pohon di kebun secara liar?",
+          options: [
+            { label: "A. Membuang sampah ke sungai", img: "assets/sampah_sungai.jpg", fallback: "sampah_sungai.jpg", correct: false, feedback: "Sampah di sungai mencemari air dan membahayakan ikan serta makhluk hidup di sekitarnya." },
+            { label: "B. Merawat tanaman & menjaga alam", img: "assets/tanam_pohon.jpg", fallback: "tanam_pohon.jpg", correct: true, feedback: "Luar biasa! Kamu berhasil menyelesaikan semua tantangan pelestarian dan meraih Lencana Penjaga Alam!" },
+            { label: "C. Menebang pohon secara liar", img: "assets/tebang_pohon.jpg", fallback: "tebang_pohon.jpg", correct: false, feedback: "Menebang pohon sembarangan membuat lingkungan menjadi gersang. Pilih sikap yang menyayangi makhluk hidup!" }
+          ]
+        }
+      ]
+    }
+  };
+
+  /* ================= STATE PERMAINAN ================= */
+  let currentSlide = 1;
+  let bookOpened = false;
+  let floraRevealed = false;
+  let faunaRevealed = false;
+  let studentName = "";
+  let badges = { asiatis: false, peralihan: false, australis: false, alam: false };
+  let regionStep = { 1: 0, 2: 0, 3: 0, 4: 0 };
+  let quizAnswers = { q1: null, q2: null, q3: null, q4: null, q5: null };
+
+  /* ================= FUNGSI MODAL ================= */
+  function showBioModal(key) {
+    sfxClick();
+    const item = bioData[key];
+    const imgEl = document.getElementById('modal-img');
+    const iconEl = document.getElementById('modal-icon');
+
+    iconEl.style.display = 'none';
+    imgEl.style.display = 'block';
+    imgEl.src = item.img;
+    imgEl.onerror = function() { this.src = makeFallbackSVG(item.title); };
+
+    document.getElementById('modal-title').style.color = "var(--hijau-hutan)";
+    document.getElementById('modal-title').textContent = item.title;
+    document.getElementById('modal-desc').textContent = item.desc;
+
+    const fullNarration = `${item.title}. ${item.desc}`;
+    document.getElementById('modal-speak-btn').onclick = () => speakText(fullNarration, true);
+    document.getElementById('modal-actions').innerHTML = `<button class="btn btn-green" onclick="closeModal()">Tutup Informasi ✅</button>`;
+    document.getElementById('modal-overlay').classList.add('active');
+
+    speakText(fullNarration);
+  }
+
+  function showFeedbackModal(isCorrect, title, message, btnLabel, onContinue) {
+    if (isCorrect) sfxCorrect(); else sfxWrong();
+    document.getElementById('modal-img').style.display = 'none';
+    const iconEl = document.getElementById('modal-icon');
+    iconEl.style.display = 'block';
+    iconEl.textContent = isCorrect ? "🌟" : "🤔";
+
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-title').style.color = isCorrect ? "var(--hijau-hutan)" : "#B83A2D";
+    document.getElementById('modal-desc').textContent = message;
+
+    document.getElementById('modal-speak-btn').onclick = () => speakText(`${title}. ${message}`, true);
+
+    if (isCorrect) {
+      document.getElementById('modal-actions').innerHTML = `<button class="btn btn-primary" id="modal-next-btn">${btnLabel || 'Lanjut Petualangan ➡️'}</button>`;
+      document.getElementById('modal-next-btn').onclick = () => {
+        closeModal();
+        if (onContinue) onContinue();
+      };
+    } else {
+      document.getElementById('modal-actions').innerHTML = `<button class="btn btn-secondary" onclick="closeModal()">🔄 Coba Lagi</button>`;
+    }
+    document.getElementById('modal-overlay').classList.add('active');
+    speakText(`${title}. ${message}`);
+  }
+
+  function closeModal() {
+    sfxClick();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    document.getElementById('modal-overlay').classList.remove('active');
+  }
+
+  function unlockBadge(type) {
+    badges[type] = true;
+    const el = document.getElementById(`badge-${type}`);
+    if (el) el.classList.add('unlocked');
+  }
+
+  function goToSlide(num) {
+    sfxClick();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    currentSlide = num;
+    renderSlide();
+  }
+
+  function nextSlide() {
+    if (currentSlide < 22) goToSlide(currentSlide + 1);
+  }
+
+  function prevSlide() {
+    if (currentSlide === 3) goToSlide(1);
+    else if (currentSlide === 4) goToSlide(2);
+    else if (currentSlide > 1) goToSlide(currentSlide - 1);
+  }
+
+  function resetGame() {
+    sfxClick();
+    bookOpened = false;
+    floraRevealed = false;
+    faunaRevealed = false;
+    badges = { asiatis: false, peralihan: false, australis: false, alam: false };
+    regionStep = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    quizAnswers = { q1: null, q2: null, q3: null, q4: null, q5: null };
+    ['asiatis', 'peralihan', 'australis', 'alam'].forEach(b => {
+      document.getElementById(`badge-${b}`).classList.remove('unlocked');
+    });
+    goToSlide(1);
+  }
+
+  function renderBioCard(key, shortTitle, categoryLabel) {
+    const item = bioData[key];
+    return `
+      <div class="bio-card" onclick="showBioModal('${key}')">
+        <img class="real-photo-thumb" src="${item.img}" alt="${shortTitle}" onerror="this.src=makeFallbackSVG('${shortTitle}')" />
+        <h4>${shortTitle}</h4>
+        <span class="tag-hint">${categoryLabel} • Klik foto</span>
+      </div>
+    `;
+  }
+
+  /* ================= RENDER TANTANGAN 3 SOAL PER WILAYAH (SEMUA PAKAI GAMBAR) ================= */
+  function renderRegionChallengeSlide(stage) {
+    const data = regionChallenges[stage];
+    const stepIdx = regionStep[stage];
+    const qObj = data.questions[stepIdx];
+
+    const optionsHTML = qObj.options.map((opt, idx) => {
+      return `
+        <div class="option-card" onclick="handleRegionAnswer(${stage}, ${idx})">
+          <img src="${opt.img}" alt="${opt.label}" onerror="this.src=makeFallbackSVG('${opt.fallback}')" />
+          <span>${opt.label}</span>
+        </div>
+      `;
+    }).join('');
+
+    const dotsHTML = [0, 1, 2].map(i => {
+      let cls = 'step-dot';
+      if (i < stepIdx) cls += ' done';
+      else if (i === stepIdx) cls += ' active';
+      return `<span class="${cls}">Soal ${i + 1}/3 ${i < stepIdx ? '✅' : ''}</span>`;
+    }).join('');
+
+    const safeSpeakQ = qObj.speak.replace(/'/g, "\\'");
+
+    return `
+      <div class="parchment-panel" style="max-width:830px; width:100%; text-align:center;">
+        <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span style="background:${data.badgeColor}; color:#fff; padding:4px 14px; border-radius:20px; font-family:'Fredoka',sans-serif;">
+            ${data.badgeTitle}
+          </span>
+          <button class="btn-audio-inline" onclick="speakText('${safeSpeakQ}', true)">🔊 Bacakan Soal</button>
+        </div>
+
+        <div class="step-dots">${dotsHTML}</div>
+
+        <h2 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan); margin:10px 0 4px; font-size:1.3rem;">
+          "${qObj.question}"
+        </h2>
+
+        <div class="quiz-options">
+          ${optionsHTML}
+        </div>
+      </div>
+      ${renderBimaDialogue('curious', data.bimaHint)}
+    `;
+  }
+
+  function handleRegionAnswer(stage, optIndex) {
+    const data = regionChallenges[stage];
+    const stepIdx = regionStep[stage];
+    const chosen = data.questions[stepIdx].options[optIndex];
+
+    if (chosen.correct) {
+      if (stepIdx < 2) {
+        showFeedbackModal(
+          true,
+          `Soal ${stepIdx + 1} dari 3 Benar! 🎉`,
+          chosen.feedback,
+          `Lanjut ke Soal ${stepIdx + 2}/3 ➡️`,
+          () => {
+            regionStep[stage] = stepIdx + 1;
+            renderSlide();
+          }
+        );
+      } else {
+        unlockBadge(data.badgeKey);
+        showFeedbackModal(
+          true,
+          "Semua Tantangan Selesai! 🏆",
+          chosen.feedback,
+          "Lanjut Petualangan ➡️",
+          () => {
+            goToSlide(data.nextSlide);
+          }
+        );
+      }
+    } else {
+      showFeedbackModal(false, "Kurang Tepat, Coba Lagi!", chosen.feedback);
+    }
+  }
+
+  /* ================= RENDER 22 SLIDE ================= */
+  function renderSlide() {
+    const app = document.getElementById('app-container');
+    const main = document.getElementById('slide-content');
+    const footer = document.getElementById('footer-nav');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const missionText = document.getElementById('mission-text');
+    const progressFill = document.getElementById('progress-fill');
+
+    app.className = '';
+    if (currentSlide >= 6 && currentSlide <= 8) app.classList.add('bg-asiatis');
+    else if (currentSlide >= 9 && currentSlide <= 11) app.classList.add('bg-peralihan');
+    else if (currentSlide >= 12 && currentSlide <= 14) app.classList.add('bg-australis');
+    else if (currentSlide === 16) app.classList.add('bg-rusak');
+
+    progressFill.style.width = `${Math.round((currentSlide / 22) * 100)}%`;
+    footer.style.display = 'flex';
+    btnPrev.style.visibility = 'visible';
+    btnNext.style.visibility = 'visible';
+    btnNext.innerHTML = 'Lanjut ➡️';
+
+    let autoTextToRead = "";
+
+    switch (currentSlide) {
+      /* SLIDE 1: HALAMAN UTAMA */
+      case 1:
+        missionText.textContent = "Halaman Utama";
+        footer.style.display = 'none';
+        autoTextToRead = "Selamat datang di Geo Adventure, Ekspedisi Flora dan Fauna Nusantara! Siap menjelajahi kekayaan alam Indonesia bersamaku?";
+        main.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px; max-width:800px;">
+            <div class="wood-board" style="padding: 22px 42px;">
+              <div style="font-size:2.2rem; margin-bottom:-4px;">🧭</div>
+              <h1 class="wood-title" style="font-size: clamp(2.1rem, 5vw, 3.5rem); line-height:1.05;">GEO ADVENTURE</h1>
+              <p style="font-family:'Fredoka',sans-serif; color:#FFF8E7; font-size:1.25rem; margin-top:8px; text-shadow: 2px 2px 0 var(--kayu-gelap);">
+                Ekspedisi Flora dan Fauna Nusantara
+              </p>
+            </div>
+
+            <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center;">
+              <button class="btn btn-primary" style="font-size:1.3rem; padding:13px 34px;" onclick="goToSlide(2)">▶️ Mulai</button>
+              <button class="btn btn-secondary" onclick="goToSlide(3)">📖 Petunjuk</button>
+              <button class="btn btn-secondary" onclick="showExitConfirm()">🚪 Keluar</button>
+            </div>
+
+            ${renderBimaDialogue('happy', '"Selamat datang di Geo Adventure! Siap menjelajahi kekayaan alam Indonesia bersamaku?"')}
+          </div>
+        `;
+        break;
+
+      /* SLIDE 2: CERITA AWAL - BUKU AJAIB */
+      case 2:
+        missionText.textContent = "Cerita Awal: Buku Ajaib";
+        btnNext.onclick = () => goToSlide(4);
+        btnNext.style.visibility = bookOpened ? 'visible' : 'hidden';
+        autoTextToRead = "Halo, teman-teman! Namaku Bima. Hari ini aku menemukan sebuah buku ajaib yang menyimpan rahasia kekayaan alam Indonesia. Klik tombol Buka Buku Ajaib!";
+        main.innerHTML = `
+          <div class="parchment-panel" style="max-width:780px; width:100%; text-align:center;">
+            <h2 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan); margin-bottom:10px;">📖 Buku Ajaib: Peta Kehidupan Nusantara</h2>
+            <p style="font-weight:700; margin-bottom:16px;">Bima menemukan buku ajaib yang menyimpan rahasia kekayaan alam Indonesia.</p>
+            
+            ${!bookOpened ? `
+              <div style="padding:26px; background:#EAD7B7; border-radius:18px; border:3px dashed var(--kayu-gelap);">
+                <div style="font-size:4.2rem; margin-bottom:10px;">📕✨</div>
+                <button class="btn btn-primary" onclick="openMagicBook()">✨ Buka Buku Ajaib</button>
+              </div>
+            ` : `
+              <div style="padding:20px; background:linear-gradient(135deg, #FFFDF5, #FCE8A6); border-radius:18px; border:4px solid var(--kuning); animation: popUp 0.4s ease;">
+                <div style="font-size:3.2rem;">📖🗺️🌿🐅🦜</div>
+                <h3 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan); margin:8px 0;">Peta Nusantara Terbuka!</h3>
+                <p style="font-weight:700;">Cahaya ajaib memunculkan peta kepulauan Indonesia dari Sabang sampai Merauke beserta beragam tumbuhan dan hewan nyata!</p>
+              </div>
+            `}
+          </div>
+          ${renderBimaDialogue('curious', '"Halo, teman-teman! Namaku Bima. Hari ini aku menemukan sebuah buku yang sangat istimewa. Maukah kalian ikut berpetualang denganku?"')}
+        `;
+        break;
+
+      /* SLIDE 3: PETUNJUK PERMAINAN */
+      case 3:
+        missionText.textContent = "Petunjuk Permainan";
+        btnNext.innerHTML = "Mulai Petualangan ▶️";
+        btnNext.onclick = () => goToSlide(4);
+        autoTextToRead = "Ikuti petunjuknya, ya! Klik tombol untuk berpindah halaman, klik foto tumbuhan dan hewan untuk melihat dan mendengarkan penjelasannya, lalu selesaikan 3 tantangan soal di setiap wilayah.";
+        main.innerHTML = `
+          <div style="max-width:820px; width:100%;">
+            <div class="wood-board" style="margin-bottom:12px; padding:12px;">
+              <h2 class="wood-title" style="font-size:1.75rem;">Petunjuk Penggunaan</h2>
+            </div>
+            <div class="parchment-panel" style="display:flex; flex-direction:column; gap:9px; font-size:1.02rem; font-weight:800;">
+              <div>🖱️ 1. Klik <b>tombol</b> untuk berpindah halaman.</div>
+              <div>📷 2. Klik <b>foto nyata</b> flora dan fauna untuk membaca serta <b>mendengarkan audio</b> penjelasannya.</div>
+              <div>🗺️ 3. Selesaikan <b>3 tantangan soal</b> di setiap wilayah persebaran.</div>
+              <div>🏅 4. Kumpulkan keempat <b>lencana petualangan</b> di bagian atas.</div>
+              <div>❓ 5. Jawab <b>kuis akhir</b> untuk mengukur pemahamanmu.</div>
+            </div>
+            ${renderBimaDialogue('happy', '"Ikuti petunjuknya, ya! Selesaikan 3 tantangan di setiap wilayah untuk mengumpulkan semua lencana!"')}
+          </div>
+        `;
+        break;
+
+      /* SLIDE 4: MENGENAL FLORA DAN FAUNA */
+      case 4:
+        missionText.textContent = "Pengenalan Dasar";
+        btnNext.onclick = () => goToSlide(5);
+        autoTextToRead = "Sebelum menjelajah, kita kenalan dulu, yuk! Klik gambar tumbuhan untuk mengenal arti Flora, dan klik gambar hewan untuk mengenal arti Fauna.";
+        main.innerHTML = `
+          <div style="max-width:860px; width:100%;">
+            <h2 style="font-family:'Fredoka',sans-serif; color:#FFF; text-shadow:2px 2px 0 var(--kayu-gelap); text-align:center; margin-bottom:12px;">
+              Klik Foto di Bawah untuk Mengenal Arti Flora dan Fauna!
+            </h2>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap:18px;">
+              <div class="parchment-panel" style="text-align:center; cursor:pointer; background:#E6F5E1;" onclick="revealConcept('flora')">
+                <img src="${bioData.rafflesia.img}"
+                     alt="Contoh Tumbuhan" style="width:100%; height:140px; object-fit:contain; background:#FFF; padding:6px; border-radius:14px; border:3px solid var(--hijau-hutan);"
+                     onerror="this.src=makeFallbackSVG('rafflesia.jpg')" />
+                <p style="font-size:0.88rem; font-weight:800; color:var(--hijau-hutan); margin:6px 0;">(Klik foto tumbuhan di atas)</p>
+                ${floraRevealed ? `
+                  <div style="background:var(--hijau-hutan); color:#fff; padding:10px; border-radius:14px; margin-top:6px; animation:popUp 0.3s;">
+                    <h3 style="font-family:'Fredoka',sans-serif; color:var(--kuning);">FLORA</h3>
+                    <p style="font-size:0.95rem;">Berbagai jenis <b>tumbuhan</b> (pohon, bunga, rumput) yang hidup di suatu wilayah.</p>
+                  </div>
+                ` : `<div class="tag-hint">👆 Klik untuk membuka arti FLORA</div>`}
+              </div>
+
+              <div class="parchment-panel" style="text-align:center; cursor:pointer; background:#FFF3D6;" onclick="revealConcept('fauna')">
+                <img src="${bioData.harimau.img}"
+                     alt="Contoh Hewan" style="width:100%; height:140px; object-fit:contain; background:#FFF; padding:6px; border-radius:14px; border:3px solid var(--oranye-gelap);"
+                     onerror="this.src=makeFallbackSVG('harimau.jpg', '#C87132')" />
+                <p style="font-size:0.88rem; font-weight:800; color:var(--oranye-gelap); margin:6px 0;">(Klik foto hewan di atas)</p>
+                ${faunaRevealed ? `
+                  <div style="background:var(--oranye-gelap); color:#fff; padding:10px; border-radius:14px; margin-top:6px; animation:popUp 0.3s;">
+                    <h3 style="font-family:'Fredoka',sans-serif; color:var(--kuning);">FAUNA</h3>
+                    <p style="font-size:0.95rem;">Berbagai jenis <b>hewan</b> (mamalia, burung, reptil, ikan) yang hidup di suatu wilayah.</p>
+                  </div>
+                ` : `<div class="tag-hint">👆 Klik untuk membuka arti FAUNA</div>`}
+              </div>
+            </div>
+
+            ${renderBimaDialogue('happy', '"Flora adalah berbagai jenis tumbuhan di suatu wilayah, sedangkan fauna adalah berbagai jenis hewan di suatu wilayah!"')}
+          </div>
+        `;
+        break;
+
+      /* SLIDE 5: PETA TIGA WILAYAH PERSEBARAN FLORA DAN FAUNA DI INDONESIA */
+      case 5:
+        missionText.textContent = "Peta Persebaran Nusantara";
+        btnNext.innerHTML = "Mulai Ekspedisi ▶️";
+        btnNext.onclick = () => goToSlide(6);
+        autoTextToRead = "Perhatikan peta Tiga Wilayah Persebaran Flora dan Fauna di Indonesia! Bagian Barat atau Asiatis meliputi Sumatra, Kalimantan, Jawa, dan Bali. Bagian Tengah atau Peralihan meliputi Sulawesi dan Nusa Tenggara. Bagian Timur atau Australis meliputi Maluku dan Papua.";
+        main.innerHTML = `
+          <div style="max-width:910px; width:100%; text-align:center;">
+            <div style="background:#17678E; border:3px solid #D9F2FC; border-radius:14px; padding:7px 26px; display:inline-block; margin-bottom:8px; box-shadow:0 4px 10px rgba(0,0,0,0.25);">
+              <h2 style="font-family:'Nunito',sans-serif; font-weight:800; color:#FFFFFF; font-size:1.35rem; letter-spacing:0.3px;">
+                Tiga Wilayah Persebaran Flora dan Fauna di Indonesia
+              </h2>
+            </div>
+
+            <div class="indo-map-frame">
+              <svg viewBox="0 0 960 350" style="width:100%; height:auto; max-height:285px; display:block;">
+                <rect x="0" y="0" width="960" height="350" rx="14" fill="#B9E5F8"/>
+
+                <!-- ZONA 1: BARAT (ASIATIS) -->
+                <g class="map-zone-interactive" onclick="goToSlide(6)">
+                  <path d="M35,34 L48,30 L68,45 L88,68 L112,92 L138,116 L168,144 L196,174 L218,204 L224,220 L212,226 L194,212 L168,186 L142,158 L112,126 L84,96 L56,64 L38,44 Z"
+                        fill="#8CD475" stroke="#2D7A31" stroke-width="2.2" stroke-linejoin="round"/>
+                  <ellipse cx="64" cy="108" rx="4" ry="8" transform="rotate(-35 64,108)" fill="#8CD475" stroke="#2D7A31" stroke-width="1.6"/>
+                  <ellipse cx="88" cy="138" rx="4" ry="10" transform="rotate(-35 88,138)" fill="#8CD475" stroke="#2D7A31" stroke-width="1.6"/>
+                  <ellipse cx="118" cy="168" rx="4" ry="9" transform="rotate(-35 118,168)" fill="#8CD475" stroke="#2D7A31" stroke-width="1.6"/>
+                  <path d="M214,174 L228,176 L232,190 L218,188 Z" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+                  <circle cx="246" cy="194" r="6" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+
+                  <path d="M226,232 L252,232 L278,240 L312,243 L346,246 L378,250 L398,256 L396,267 L370,266 L338,262 L302,258 L266,253 L236,246 L224,238 Z"
+                        fill="#8CD475" stroke="#2D7A31" stroke-width="2.2" stroke-linejoin="round"/>
+                  <path d="M362,240 L388,240 L386,246 L361,246 Z" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+                  <path d="M404,258 L420,258 L419,267 L403,266 Z" fill="#8CD475" stroke="#2D7A31" stroke-width="2"/>
+
+                  <path d="M294,116 L325,108 L352,114 L388,105 L418,86 L446,74 L466,84 L464,104 L452,126 L456,144 L444,168 L422,186 L394,194 L356,194 L322,184 L302,164 L292,138 Z"
+                        fill="#8CD475" stroke="#2D7A31" stroke-width="2.2" stroke-linejoin="round"/>
+                  <path d="M312,110 L345,92 L378,76 L414,52 L442,36 L464,46 L484,64 L476,78 L462,82 L446,74 L418,86 L388,105 L352,114 L325,108 Z"
+                        fill="#DCE1E5" stroke="#4A89B8" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M312,110 L325,108 L352,114 L388,105 L418,86 L446,74 L464,82"
+                        fill="none" stroke="#D63031" stroke-width="2.4" stroke-dasharray="5,3"/>
+
+                  <rect x="172" y="16" width="142" height="38" rx="4" fill="#FCE4D6" stroke="#F47C3C" stroke-width="3.2"/>
+                  <text x="243" y="42" text-anchor="middle" fill="#1C2B33" font-family="Nunito" font-weight="800" font-size="22">Barat</text>
+
+                  <rect x="82" y="128" width="94" height="28" rx="5" fill="#F47C3C"/>
+                  <text x="129" y="147" text-anchor="middle" fill="#FFF" font-family="Nunito" font-weight="800" font-size="14">Sumatra</text>
+
+                  <rect x="275" y="118" width="112" height="28" rx="5" fill="#F47C3C"/>
+                  <text x="331" y="137" text-anchor="middle" fill="#FFF" font-family="Nunito" font-weight="800" font-size="14">Kalimantan</text>
+
+                  <rect x="292" y="210" width="72" height="27" rx="5" fill="#F47C3C"/>
+                  <text x="328" y="228" text-anchor="middle" fill="#FFF" font-family="Nunito" font-weight="800" font-size="14">Jawa</text>
+
+                  <rect x="338" y="272" width="68" height="27" rx="5" fill="#F47C3C"/>
+                  <text x="372" y="290" text-anchor="middle" fill="#FFF" font-family="Nunito" font-weight="800" font-size="14">Bali</text>
+                </g>
+
+                <!-- ZONA 2: TENGAH (PERALIHAN) -->
+                <g class="map-zone-interactive" onclick="goToSlide(9)">
+                  <path d="M498,104 L528,96 L562,92 L584,82 L592,90 L568,102 L536,108 L528,124 L548,126 L576,120 L584,130 L558,138 L534,142 L534,158 L556,174 L548,186 L526,168 L518,194 L506,198 L502,174 L492,196 L480,192 L488,156 L494,124 Z"
+                        fill="#8CD475" stroke="#2D7A31" stroke-width="2.2" stroke-linejoin="round"/>
+                  <ellipse cx="556" cy="196" rx="5" ry="9" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+
+                  <path d="M426,259 L440,259 L439,268 L425,267 Z" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+                  <path d="M446,260 L482,261 L480,270 L445,269 Z" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+                  <path d="M482,284 L508,288 L505,298 L479,293 Z" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+                  <path d="M504,262 L556,260 L555,269 L503,270 Z" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+                  <path d="M564,260 L588,259 L587,266 L563,266 Z" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+                  <path d="M558,292 L592,282 L594,292 L564,302 Z" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+                  <path d="M592,282 L632,272 L635,281 L594,292 Z" fill="#DCE1E5" stroke="#4A89B8" stroke-width="1.8"/>
+                  <line x1="592" y1="282" x2="594" y2="292" stroke="#D63031" stroke-width="2.2"/>
+
+                  <rect x="506" y="10" width="136" height="54" rx="4" fill="#FCE4D6" stroke="#F47C3C" stroke-width="3.2"/>
+                  <text x="574" y="33" text-anchor="middle" fill="#1C2B33" font-family="Nunito" font-weight="800" font-size="18">Tengah</text>
+                  <text x="574" y="54" text-anchor="middle" fill="#1C2B33" font-family="Nunito" font-weight="800" font-size="17">(Peralihan)</text>
+
+                  <rect x="492" y="146" width="92" height="27" rx="5" fill="#F47C3C"/>
+                  <text x="538" y="164" text-anchor="middle" fill="#FFF" font-family="Nunito" font-weight="800" font-size="13.5">Sulawesi</text>
+
+                  <rect x="444" y="302" width="104" height="38" rx="5" fill="#F47C3C"/>
+                  <text x="496" y="319" text-anchor="middle" fill="#FFF" font-family="Nunito" font-weight="800" font-size="13">Nusa</text>
+                  <text x="496" y="334" text-anchor="middle" fill="#FFF" font-family="Nunito" font-weight="800" font-size="13">Tenggara</text>
+                </g>
+
+                <!-- ZONA 3: TIMUR (AUSTRALIS) -->
+                <g class="map-zone-interactive" onclick="goToSlide(12)">
+                  <path d="M634,82 L646,74 L652,92 L666,88 L662,104 L648,108 L652,126 L640,126 L638,104 Z"
+                        fill="#8CD475" stroke="#2D7A31" stroke-width="2" stroke-linejoin="round"/>
+                  <ellipse cx="622" cy="176" rx="11" ry="7" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+                  <path d="M644,172 L688,174 L686,184 L642,182 Z" fill="#8CD475" stroke="#2D7A31" stroke-width="2"/>
+
+                  <path d="M702,138 L734,132 L754,144 L750,162 L772,164 L796,154 L832,166 L878,184 L918,214 L924,234 L894,230 L876,244 L848,236 L814,228 L788,214 L764,198 L738,184 L712,168 L698,152 Z"
+                        fill="#8CD475" stroke="#2D7A31" stroke-width="2.3" stroke-linejoin="round"/>
+                  <ellipse cx="732" cy="226" rx="7" ry="12" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+                  <ellipse cx="688" cy="256" rx="8" ry="5" transform="rotate(-30 688,256)" fill="#8CD475" stroke="#2D7A31" stroke-width="1.8"/>
+
+                  <rect x="738" y="16" width="136" height="38" rx="4" fill="#FCE4D6" stroke="#F47C3C" stroke-width="3.2"/>
+                  <text x="806" y="42" text-anchor="middle" fill="#1C2B33" font-family="Nunito" font-weight="800" font-size="22">Timur</text>
+
+                  <rect x="658" y="66" width="84" height="27" rx="5" fill="#F47C3C"/>
+                  <text x="700" y="84" text-anchor="middle" fill="#FFF" font-family="Nunito" font-weight="800" font-size="13.5">Maluku</text>
+
+                  <rect x="794" y="176" width="84" height="28" rx="5" fill="#F47C3C"/>
+                  <text x="836" y="195" text-anchor="middle" fill="#FFF" font-family="Nunito" font-weight="800" font-size="14">Papua</text>
+                </g>
+
+                <!-- GARIS WALLACE & WEBER -->
+                <path d="M512,66 L464,162 L422,262 L396,342"
+                      fill="none" stroke="#1C2B33" stroke-width="3.5" stroke-dasharray="10,8" stroke-linecap="round"/>
+                <path d="M634,66 L614,132 L602,168 L628,194 L668,216 L658,274 L608,342"
+                      fill="none" stroke="#1C2B33" stroke-width="3.5" stroke-dasharray="10,8" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            ${renderBimaDialogue('happy', '"Ini peta Indonesia yang nyata! Klik wilayah <b>Barat (Asiatis)</b>, <b>Tengah (Peralihan)</b>, atau <b>Timur (Australis)</b> pada peta, atau tekan Mulai Ekspedisi!"')}
+          </div>
+        `;
+        break;
+
+      /* SLIDE 6: MEMASUKI WILAYAH ASIATIS */
+      case 6:
+        missionText.textContent = "Misi 1 - Wilayah Asiatis";
+        btnNext.innerHTML = "Jelajahi Flora & Fauna ▶️";
+        btnNext.onclick = () => goToSlide(7);
+        autoTextToRead = "Petualangan pertama kita dimulai dari wilayah Barat atau Asiatis! Wilayah ini meliputi Sumatra, Jawa, Kalimantan, dan Bali. Yuk, kita cari tahu hewan dan tumbuhan nyata yang ada di sini!";
+        main.innerHTML = `
+          <div class="parchment-panel" style="max-width:780px; width:100%; text-align:center;">
+            <span style="background:var(--hijau-hutan); color:#fff; padding:5px 16px; border-radius:20px; font-family:'Fredoka',sans-serif;">MISI 1 - WILAYAH BARAT (ASIATIS)</span>
+            <h2 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan); font-size:1.85rem; margin:10px 0;">Hutan Tropis Bagian Barat Indonesia</h2>
+            <div class="preview-strip">
+              <img src="${bioData.rafflesia.img}" alt="Rafflesia" onerror="this.src=makeFallbackSVG('rafflesia.jpg')" />
+              <img src="${bioData.harimau.img}" alt="Harimau" onerror="this.src=makeFallbackSVG('harimau.jpg')" />
+              <img src="${bioData.orangutan.img}" alt="Orangutan" onerror="this.src=makeFallbackSVG('orangutan.jpg')" />
+              <img src="${bioData.gajah.img}" alt="Gajah" onerror="this.src=makeFallbackSVG('gajah.jpg')" />
+            </div>
+            <p style="font-size:1.1rem; font-weight:800; color:var(--teks-gelap);">
+              Wilayah Asiatis meliputi <b>Sumatra, Jawa, Kalimantan, dan Bali</b>.
+            </p>
+          </div>
+          ${renderBimaDialogue('curious', '"Petualangan pertama kita dimulai dari wilayah Asiatis! Yuk, kita cari tahu hewan dan tumbuhan apa saja yang ada di sini!"')}
+        `;
+        break;
+
+      /* SLIDE 7: FLORA DAN FAUNA ASIATIS */
+      case 7:
+        missionText.textContent = "Misi 1 - Flora & Fauna Asiatis";
+        btnNext.innerHTML = "Tantangan Asiatis (3 Soal) 🎯";
+        btnNext.onclick = () => goToSlide(8);
+        autoTextToRead = "Klik setiap foto tumbuhan dan hewan wilayah Asiatis untuk melihat ukuran aslinya dan mendengarkan penjelasannya!";
+        main.innerHTML = `
+          <div style="max-width:880px; width:100%;">
+            <h3 style="font-family:'Fredoka',sans-serif; color:#FFF; text-shadow:2px 2px 0 #184A2F; text-align:center; margin-bottom:10px;">
+              Klik Foto Flora & Fauna Asiatis untuk Mendengarkan Penjelasan!
+            </h3>
+            <div class="cards-grid">
+              ${renderBioCard('rafflesia', 'Rafflesia Arnoldii', 'Flora')}
+              ${renderBioCard('meranti', 'Pohon Meranti', 'Flora')}
+              ${renderBioCard('rotan', 'Tumbuhan Rotan', 'Flora')}
+              ${renderBioCard('orangutan', 'Orangutan', 'Fauna')}
+              ${renderBioCard('harimau', 'Harimau Sumatra', 'Fauna')}
+              ${renderBioCard('gajah', 'Gajah Sumatra', 'Fauna')}
+            </div>
+          </div>
+        `;
+        break;
+
+      /* SLIDE 8: TANTANGAN WILAYAH ASIATIS (3 SOAL) */
+      case 8:
+        missionText.textContent = `Tantangan Misi 1 (${regionStep[1] + 1}/3)`;
+        btnNext.style.visibility = 'hidden';
+        autoTextToRead = regionChallenges[1].questions[regionStep[1]].speak;
+        main.innerHTML = renderRegionChallengeSlide(1);
+        break;
+
+      /* SLIDE 9: TRANSISI KE WILAYAH PERALIHAN */
+      case 9:
+        missionText.textContent = "Misi 2 - Wilayah Peralihan";
+        btnNext.innerHTML = "Lanjutkan Ekspedisi ▶️";
+        btnNext.onclick = () => goToSlide(10);
+        autoTextToRead = "Hebat! Satu wilayah sudah berhasil kita jelajahi. Sekarang kita menyeberang menuju wilayah Tengah atau Peralihan yang meliputi Sulawesi dan Nusa Tenggara!";
+        main.innerHTML = `
+          <div class="parchment-panel" style="max-width:760px; width:100%; text-align:center;">
+            <span style="background:var(--oranye); color:#fff; padding:5px 16px; border-radius:20px; font-family:'Fredoka',sans-serif;">MISI 2 - WILAYAH TENGAH (PERALIHAN)</span>
+            <div class="vehicle-float" style="margin:12px 0;">⛵🏝️🌊</div>
+            <h2 style="font-family:'Fredoka',sans-serif; color:var(--kayu-gelap);">Menyeberangi Laut Menuju Bagian Tengah Indonesia</h2>
+            <p style="font-weight:700; margin-top:8px;">Bima menaiki perahu menuju kawasan <b>Sulawesi dan Kepulauan Nusa Tenggara</b>.</p>
+          </div>
+          ${renderBimaDialogue('happy', '"Hebat! Satu wilayah sudah berhasil kita jelajahi. Sekarang, kita menuju wilayah Peralihan yang memiliki hewan-hewan endemik unik!"')}
+        `;
+        break;
+
+      /* SLIDE 10: FLORA DAN FAUNA PERALIHAN */
+      case 10:
+        missionText.textContent = "Misi 2 - Flora & Fauna Peralihan";
+        btnNext.innerHTML = "Tantangan Peralihan (3 Soal) 🎯";
+        btnNext.onclick = () => goToSlide(11);
+        autoTextToRead = "Selamat datang di wilayah Peralihan! Klik setiap foto untuk mengenal flora dan fauna khas Sulawesi dan Nusa Tenggara.";
+        main.innerHTML = `
+          <div style="max-width:880px; width:100%;">
+            <h3 style="font-family:'Fredoka',sans-serif; color:var(--kayu-gelap); text-align:center; margin-bottom:10px;">
+              Wilayah Peralihan (Sulawesi & Nusa Tenggara) — Klik Foto untuk Info & Audio!
+            </h3>
+            <div class="cards-grid">
+              ${renderBioCard('cendana', 'Pohon Cendana', 'Flora')}
+              ${renderBioCard('eboni', 'Pohon Eboni', 'Flora')}
+              ${renderBioCard('lontar', 'Pohon Lontar', 'Flora')}
+              ${renderBioCard('komodo', 'Komodo', 'Fauna')}
+              ${renderBioCard('anoa', 'Anoa', 'Fauna')}
+              ${renderBioCard('maleo', 'Burung Maleo', 'Fauna')}
+            </div>
+          </div>
+        `;
+        break;
+
+      /* SLIDE 11: TANTANGAN WILAYAH PERALIHAN (3 SOAL) */
+      case 11:
+        missionText.textContent = `Tantangan Misi 2 (${regionStep[2] + 1}/3)`;
+        btnNext.style.visibility = 'hidden';
+        autoTextToRead = regionChallenges[2].questions[regionStep[2]].speak;
+        main.innerHTML = renderRegionChallengeSlide(2);
+        break;
+
+      /* SLIDE 12: TRANSISI KE WILAYAH AUSTRALIS */
+      case 12:
+        missionText.textContent = "Misi 3 - Wilayah Australis";
+        btnNext.innerHTML = "Lanjutkan ▶️";
+        btnNext.onclick = () => goToSlide(13);
+        autoTextToRead = "Perjalanan kita hampir selesai. Sekarang kita terbang menuju wilayah Timur atau Australis yang meliputi Maluku dan Papua!";
+        main.innerHTML = `
+          <div class="parchment-panel" style="max-width:760px; width:100%; text-align:center;">
+            <span style="background:#6B46C1; color:#fff; padding:5px 16px; border-radius:20px; font-family:'Fredoka',sans-serif;">MISI 3 - WILAYAH TIMUR (AUSTRALIS)</span>
+            <div class="vehicle-float" style="margin:12px 0;">🛩️🏔️🌲</div>
+            <h2 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan);">Terbang Menuju Wilayah Paling Timur Indonesia</h2>
+            <p style="font-weight:700; margin-top:8px;">Bima menuju kawasan <b>Maluku, Papua, dan pulau-pulau di sekitarnya</b>.</p>
+          </div>
+          ${renderBimaDialogue('happy', '"Perjalanan kita hampir selesai. Sekarang kita menuju wilayah paling timur Indonesia yang kaya akan burung berbulu indah!"')}
+        `;
+        break;
+
+      /* SLIDE 13: FLORA DAN FAUNA AUSTRALIS */
+      case 13:
+        missionText.textContent = "Misi 3 - Flora & Fauna Australis";
+        btnNext.innerHTML = "Tantangan Australis (3 Soal) 🎯";
+        btnNext.onclick = () => goToSlide(14);
+        autoTextToRead = "Ini dia wilayah Timur atau Australis di Maluku dan Papua! Klik setiap foto untuk mengenal Sagu, Matoa, Eukaliptus, Cenderawasih, Kasuari, dan Kanguru Pohon.";
+        main.innerHTML = `
+          <div style="max-width:880px; width:100%;">
+            <h3 style="font-family:'Fredoka',sans-serif; color:#FFF; text-shadow:2px 2px 0 #184A2F; text-align:center; margin-bottom:10px;">
+              Wilayah Australis (Maluku & Papua) — Klik Foto untuk Info & Audio!
+            </h3>
+            <div class="cards-grid">
+              ${renderBioCard('sagu', 'Pohon Sagu', 'Flora')}
+              ${renderBioCard('matoa', 'Buah Matoa', 'Flora')}
+              ${renderBioCard('eukaliptus', 'Pohon Eukaliptus', 'Flora')}
+              ${renderBioCard('cenderawasih', 'Cenderawasih', 'Fauna')}
+              ${renderBioCard('kasuari', 'Burung Kasuari', 'Fauna')}
+              ${renderBioCard('kanguru', 'Kanguru Pohon', 'Fauna')}
+            </div>
+          </div>
+        `;
+        break;
+
+      /* SLIDE 14: TANTANGAN WILAYAH AUSTRALIS (3 SOAL) */
+      case 14:
+        missionText.textContent = `Tantangan Misi 3 (${regionStep[3] + 1}/3)`;
+        btnNext.style.visibility = 'hidden';
+        autoTextToRead = regionChallenges[3].questions[regionStep[3]].speak;
+        main.innerHTML = renderRegionChallengeSlide(3);
+        break;
+
+      /* SLIDE 15: KEKAYAAN ALAM DI SEKITAR PURWOREJO */
+      case 15:
+        missionText.textContent = "Lingkungan Sekitar Kita";
+        btnNext.onclick = () => goToSlide(16);
+        autoTextToRead = "Teman-teman, kita tidak harus pergi jauh untuk mengenal kekayaan alam. Di sekitar Purworejo juga terdapat persawahan padi, pohon kelapa, bambu, perbukitan, dan sungai. Klik fotonya untuk melihat penjelasannya!";
+        main.innerHTML = `
+          <div style="max-width:860px; width:100%;">
+            <div class="parchment-panel" style="text-align:center;">
+              <h2 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan); margin-bottom:6px;">🏡 Kekayaan Alam di Sekitar Purworejo</h2>
+              <p style="font-weight:700; margin-bottom:12px;">
+                Di lingkungan sekitar kita terdapat beragam tumbuhan, hewan, dan habitat nyata. Klik foto di bawah ini!
+              </p>
+              <div class="cards-grid">
+                ${renderBioCard('sawah', 'Persawahan & Padi', 'Habitat Lokal')}
+                ${renderBioCard('kebun', 'Kelapa & Bambu', 'Tumbuhan Sekitar')}
+                ${renderBioCard('sungai', 'Perbukitan & Sungai', 'Ekosistem Air')}
+              </div>
+            </div>
+            ${renderBimaDialogue('happy', '"Di sekitar Purworejo juga terdapat berbagai tumbuhan dan hewan. Kita perlu menjaga lingkungan agar makhluk hidup terus berkembang dengan baik!"')}
+          </div>
+        `;
+        break;
+
+      /* SLIDE 16: MISI PENYELAMATAN ALAM */
+      case 16:
+        missionText.textContent = "Misi Penyelamatan Alam";
+        btnNext.innerHTML = "Bantu Alam (3 Soal) 🌱";
+        btnNext.onclick = () => goToSlide(17);
+        autoTextToRead = "Waduh! Beberapa tempat hidup hewan dan tumbuhan mulai rusak akibat penebangan hutan berlebihan, perburuan liar, kebakaran hutan, dan pencemaran lingkungan. Apa yang bisa kita lakukan?";
+        main.innerHTML = `
+          <div style="max-width:800px; width:100%;">
+            <div class="parchment-panel" style="text-align:center; border-color:#8B261D;">
+              <h2 style="font-family:'Fredoka',sans-serif; color:#B83A2D; margin-bottom:12px;">⚠️ Ancaman bagi Flora dan Fauna</h2>
+              <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; text-align:left; font-weight:800; font-size:1.05rem;">
+                <div style="background:#FDECEC; padding:12px; border-radius:14px; border:2px solid #E5A9A9;">🪓 Penebangan hutan berlebihan</div>
+                <div style="background:#FDECEC; padding:12px; border-radius:14px; border:2px solid #E5A9A9;">🎯 Perburuan liar satwa dilindungi</div>
+                <div style="background:#FDECEC; padding:12px; border-radius:14px; border:2px solid #E5A9A9;">🔥 Kebakaran hutan</div>
+                <div style="background:#FDECEC; padding:12px; border-radius:14px; border:2px solid #E5A9A9;">🏭 Pencemaran lingkungan</div>
+              </div>
+            </div>
+            ${renderBimaDialogue('surprised', '"Waduh! Beberapa tempat hidup hewan dan tumbuhan mulai rusak. Apa yang bisa kita lakukan untuk membantu mereka?"')}
+          </div>
+        `;
+        break;
+
+      /* SLIDE 17: TANTANGAN PELESTARIAN (3 SOAL) */
+      case 17:
+        missionText.textContent = `Tantangan Pelestarian (${regionStep[4] + 1}/3)`;
+        btnNext.style.visibility = 'hidden';
+        autoTextToRead = regionChallenges[4].questions[regionStep[4]].speak;
+        main.innerHTML = renderRegionChallengeSlide(4);
+        break;
+
+      /* SLIDE 18: PEMBUKA KUIS AKHIR */
+      case 18:
+        missionText.textContent = "Evaluasi Akhir";
+        btnNext.innerHTML = "Mulai Kuis 📝";
+        btnNext.onclick = () => goToSlide(19);
+        autoTextToRead = "Kita sudah menyelesaikan perjalanan panjang. Sekarang saatnya menguji pengetahuanmu dengan 5 soal pilihan ganda! Setiap jawaban benar bernilai 20 poin.";
+        main.innerHTML = `
+          <div style="max-width:760px; width:100%; text-align:center;">
+            <div class="wood-board" style="margin-bottom:14px;">
+              <h2 class="wood-title" style="font-size:2.1rem;">⭐ UJI PENGETAHUANMU! ⭐</h2>
+            </div>
+            <div class="parchment-panel" style="font-size:1.1rem; font-weight:800; line-height:1.75;">
+              <p>📋 Terdiri dari <b>5 soal pilihan ganda</b>.</p>
+              <p>🎯 Setiap jawaban benar bernilai <b>20 poin</b>.</p>
+              <p>🏆 Nilai maksimal adalah <b>100 poin</b>.</p>
+              <div style="margin-top:12px;">
+                <input type="text" id="input-student-name" placeholder="Ketik namamu di sini (opsional)..." value="${studentName}"
+                  oninput="studentName = this.value"
+                  style="padding:10px 16px; border-radius:14px; border:3px solid var(--kayu-gelap); font-family:'Nunito',sans-serif; font-size:1rem; font-weight:700; width:80%; max-width:340px; text-align:center;">
+              </div>
+            </div>
+            ${renderBimaDialogue('happy', '"Kita sudah menyelesaikan perjalanan panjang. Sekarang saatnya menguji pengetahuanmu! Jawablah pertanyaan berikut dengan teliti, ya!"')}
+          </div>
+        `;
+        break;
+
+      /* SLIDE 19: KUIS AKHIR - SOAL 1 & 2 */
+      case 19:
+        missionText.textContent = "Kuis Akhir (Soal 1 - 2)";
+        btnNext.innerHTML = "Berikutnya ➡️";
+        btnNext.onclick = () => {
+          if (quizAnswers.q1 === null || quizAnswers.q2 === null) {
+            showFeedbackModal(false, "Belum Dijawab Semua", "Jawab Soal 1 dan Soal 2 terlebih dahulu sebelum melanjutkan, ya!");
+          } else {
+            goToSlide(20);
+          }
+        };
+        autoTextToRead = "Bacalah atau dengarkan Soal 1 dan Soal 2, lalu klik jawaban yang paling tepat!";
+        main.innerHTML = `
+          <div style="max-width:850px; width:100%; display:flex; flex-direction:column; gap:14px;">
+            <div class="parchment-panel" style="padding:16px 22px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+                <h3 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan);">
+                  Soal 1: Flora adalah istilah untuk menyebut ...
+                </h3>
+                <button class="btn-audio-inline" onclick="speakText('Soal 1: Flora adalah istilah untuk menyebut... A. Hewan, B. Tumbuhan, atau C. Lingkungan?', true)">🔊 Bacakan Soal 1</button>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+                ${renderQuizBtn('q1', 'A', 'A. Hewan', false)}
+                ${renderQuizBtn('q1', 'B', 'B. Tumbuhan', true)}
+                ${renderQuizBtn('q1', 'C', 'C. Lingkungan', false)}
+              </div>
+            </div>
+
+            <div class="parchment-panel" style="padding:16px 22px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+                <h3 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan);">
+                  Soal 2: Orangutan merupakan contoh fauna dari wilayah ...
+                </h3>
+                <button class="btn-audio-inline" onclick="speakText('Soal 2: Orangutan merupakan contoh fauna dari wilayah... A. Asiatis, B. Peralihan, atau C. Australis?', true)">🔊 Bacakan Soal 2</button>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+                ${renderQuizBtn('q2', 'A', 'A. Asiatis', true)}
+                ${renderQuizBtn('q2', 'B', 'B. Peralihan', false)}
+                ${renderQuizBtn('q2', 'C', 'C. Australis', false)}
+              </div>
+            </div>
+          </div>
+        `;
+        break;
+
+      /* SLIDE 20: KUIS AKHIR - SOAL 3, 4, & 5 */
+      case 20:
+        missionText.textContent = "Kuis Akhir (Soal 3 - 5)";
+        btnNext.innerHTML = "Lihat Hasil 🏆";
+        btnNext.onclick = () => {
+          if (quizAnswers.q3 === null || quizAnswers.q4 === null || quizAnswers.q5 === null) {
+            showFeedbackModal(false, "Sedikit Lagi!", "Pastikan Soal 3, 4, dan 5 sudah dipilih jawabannya sebelum melihat hasil!");
+          } else {
+            goToSlide(21);
+          }
+        };
+        autoTextToRead = "Sedikit lagi selesai! Kerjakan Soal 3, Soal 4, dan Soal 5 dengan teliti!";
+        main.innerHTML = `
+          <div style="max-width:880px; width:100%; display:flex; flex-direction:column; gap:10px;">
+            <div class="parchment-panel" style="padding:12px 18px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                <h4 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan);">
+                  Soal 3: Komodo merupakan fauna khas wilayah ...
+                </h4>
+                <button class="btn-audio-inline" onclick="speakText('Soal 3: Komodo merupakan fauna khas wilayah... A. Asiatis, B. Peralihan, atau C. Australis?', true)">🔊 Bacakan Soal 3</button>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+                ${renderQuizBtn('q3', 'A', 'A. Asiatis', false)}
+                ${renderQuizBtn('q3', 'B', 'B. Peralihan', true)}
+                ${renderQuizBtn('q3', 'C', 'C. Australis', false)}
+              </div>
+            </div>
+
+            <div class="parchment-panel" style="padding:12px 18px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                <h4 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan);">
+                  Soal 4: Burung cenderawasih banyak ditemukan di wilayah ...
+                </h4>
+                <button class="btn-audio-inline" onclick="speakText('Soal 4: Burung cenderawasih banyak ditemukan di wilayah... A. Papua, B. Sumatra, atau C. Jawa?', true)">🔊 Bacakan Soal 4</button>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+                ${renderQuizBtn('q4', 'A', 'A. Papua', true)}
+                ${renderQuizBtn('q4', 'B', 'B. Sumatra', false)}
+                ${renderQuizBtn('q4', 'C', 'C. Jawa', false)}
+              </div>
+            </div>
+
+            <div class="parchment-panel" style="padding:12px 18px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                <h4 style="font-family:'Fredoka',sans-serif; color:var(--hijau-hutan);">
+                  Soal 5: Cara menjaga kelestarian flora dan fauna adalah ...
+                </h4>
+                <button class="btn-audio-inline" onclick="speakText('Soal 5: Cara menjaga kelestarian flora dan fauna adalah... A. Memburu hewan, B. Merusak hutan, atau C. Menjaga habitat?', true)">🔊 Bacakan Soal 5</button>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+                ${renderQuizBtn('q5', 'A', 'A. Memburu hewan', false)}
+                ${renderQuizBtn('q5', 'B', 'B. Merusak hutan', false)}
+                ${renderQuizBtn('q5', 'C', 'C. Menjaga habitat', true)}
+              </div>
+            </div>
+          </div>
+        `;
+        break;
+
+      /* SLIDE 21: HASIL PETUALANGAN */
+      case 21:
+        sfxMagic();
+        missionText.textContent = "Hasil Petualangan";
+        btnNext.innerHTML = "Penutup 🎉";
+        btnNext.onclick = () => goToSlide(22);
+        const totalScore = Object.values(quizAnswers).filter(v => v === true).length * 20;
+        const displayName = studentName.trim() !== "" ? studentName.trim() : "Penjelajah Cilik";
+        autoTextToRead = `Petualangan selesai! Selamat ${displayName}, nilai kamu adalah ${totalScore} dari 100! Teruslah belajar dan menjaga alam sekitar!`;
+
+        main.innerHTML = `
+          <div style="max-width:780px; width:100%; text-align:center;">
+            <div class="wood-board" style="margin-bottom:12px;">
+              <h2 class="wood-title" style="font-size:1.95rem;">🏆 PETUALANGAN SELESAI! 🏆</h2>
+            </div>
+
+            <div class="parchment-panel">
+              <div style="font-size:3rem; margin-bottom:4px;">🥇⭐⭐⭐</div>
+              <p style="font-size:1.15rem; font-weight:800;">Nama Penjelajah: <span style="color:var(--hijau-hutan);">${escapeHTML(displayName)}</span></p>
+              <div style="background:var(--kuning); border:4px solid var(--kayu-gelap); border-radius:18px; padding:10px 24px; display:inline-block; margin:10px 0;">
+                <span style="font-family:'Fredoka',sans-serif; font-size:2.1rem; color:var(--teks-gelap);">Nilai: ${totalScore} / 100</span>
+              </div>
+
+              <p style="font-weight:800; margin-top:4px;">Lencana yang Berhasil Dikumpulkan:</p>
+              <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:8px;">
+                <span style="background:#E6F5E1; border:2px solid var(--hijau-hutan); padding:5px 12px; border-radius:14px; font-weight:800;">🐅 Penjelajah Asiatis</span>
+                <span style="background:#FFF3D6; border:2px solid var(--oranye); padding:5px 12px; border-radius:14px; font-weight:800;">🦎 Penjelajah Peralihan</span>
+                <span style="background:#EDE9FE; border:2px solid #6B46C1; padding:5px 12px; border-radius:14px; font-weight:800;">🦜 Penjelajah Australis</span>
+                <span style="background:#E0F2FE; border:2px solid #0284C7; padding:5px 12px; border-radius:14px; font-weight:800;">🌱 Penjaga Alam</span>
+              </div>
+            </div>
+
+            ${renderBimaDialogue('happy', `"Hebat, ${escapeHTML(displayName)}! Kamu telah berhasil menjelajahi kekayaan flora dan fauna Indonesia. Teruslah belajar dan menjaga alam sekitar!"`)}
+          </div>
+        `;
+        break;
+
+      /* SLIDE 22: PENUTUP */
+      case 22:
+        missionText.textContent = "Penutup Ekspedisi";
+        footer.style.display = 'none';
+        autoTextToRead = "Wah, seru sekali petualangan kita! Ingat, kekayaan alam Indonesia adalah tanggung jawab kita bersama. Yuk, jaga dan lestarikan alam Indonesia! Sampai jumpa!";
+        main.innerHTML = `
+          <div style="max-width:800px; width:100%; text-align:center;">
+            <div class="wood-board" style="margin-bottom:14px;">
+              <h2 class="wood-title" style="font-size:2.2rem;">SAMPAI JUMPA! 👋</h2>
+              <p style="color:#FFF8E7; font-family:'Fredoka',sans-serif; font-size:1.2rem; margin-top:6px;">
+                "Jaga dan lestarikan kekayaan alam Indonesia!"
+              </p>
+            </div>
+
+            <div class="parchment-panel" style="margin-bottom:12px;">
+              <div class="preview-strip">
+                <img src="${bioData.orangutan.img}" alt="Orangutan" onerror="this.src=makeFallbackSVG('orangutan.jpg')" />
+                <img src="${bioData.komodo.img}" alt="Komodo" onerror="this.src=makeFallbackSVG('komodo.jpg')" />
+                <img src="${bioData.cenderawasih.img}" alt="Cenderawasih" onerror="this.src=makeFallbackSVG('cenderawasih.jpg')" />
+                <img src="${bioData.rafflesia.img}" alt="Rafflesia" onerror="this.src=makeFallbackSVG('rafflesia.jpg')" />
+              </div>
+              <p style="font-weight:800; font-size:1.02rem;">
+                Media Pembelajaran Interaktif IPAS Kelas V SD • Disusun oleh Kelompok 02
+              </p>
+            </div>
+
+            ${renderBimaDialogue('happy', '"Wah, seru sekali petualangan kita! Ingat, kekayaan alam Indonesia adalah tanggung jawab kita bersama. Yuk, jaga dan lestarikan alam Indonesia!"')}
+
+            <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:14px;">
+              <button class="btn btn-primary" onclick="resetGame()">🔄 Main Lagi dari Awal</button>
+              <button class="btn btn-green" onclick="showExitConfirm()">✅ Selesai</button>
+            </div>
+          </div>
+        `;
+        break;
+    }
+
+    if (autoTextToRead) {
+      speakText(autoTextToRead);
+    }
+  }
+
+  /* ================= HELPER INTERAKSI KHUSUS ================= */
+  function openMagicBook() {
+    sfxMagic();
+    bookOpened = true;
+    renderSlide();
+  }
+
+  function revealConcept(type) {
+    sfxCorrect();
+    if (type === 'flora') {
+      floraRevealed = true;
+      speakText("Flora adalah berbagai jenis tumbuhan seperti pohon, bunga, dan rumput yang hidup di suatu wilayah.", true);
+    }
+    if (type === 'fauna') {
+      faunaRevealed = true;
+      speakText("Fauna adalah berbagai jenis hewan seperti mamalia, burung, reptil, dan ikan yang hidup di suatu wilayah.", true);
+    }
+    renderSlide();
+  }
+
+  function renderQuizBtn(qKey, optLetter, label, isCorrect) {
+    const isThisSelected = document.body.dataset[qKey] === optLetter;
+    let bg = "#FFFFFF";
+    if (isThisSelected) {
+      bg = isCorrect ? "var(--hijau-muda)" : "#F8B4B4";
+    }
+    return `
+      <button class="option-card" style="padding:10px; font-size:0.98rem; background:${bg};"
+        onclick="answerFinalQuiz('${qKey}', '${optLetter}', ${isCorrect})">
+        ${label} ${isThisSelected ? (isCorrect ? '✅' : '❌') : ''}
+      </button>
+    `;
+  }
+
+  function answerFinalQuiz(qKey, optLetter, isCorrect) {
+    if (isCorrect) {
+      sfxCorrect();
+      speakText("Jawaban tepat!", true);
+    } else {
+      sfxWrong();
+      speakText("Kurang tepat, coba pilih jawaban lain.", true);
+    }
+    document.body.dataset[qKey] = optLetter;
+    quizAnswers[qKey] = isCorrect;
+    renderSlide();
+  }
+
+  function showExitConfirm() {
+    sfxClick();
+    document.getElementById('modal-img').style.display = 'none';
+    const iconEl = document.getElementById('modal-icon');
+    iconEl.style.display = 'block';
+    iconEl.textContent = "👋";
+
+    document.getElementById('modal-title').style.color = "var(--hijau-hutan)";
+    document.getElementById('modal-title').textContent = "Terima Kasih Sudah Berpetualang!";
+    document.getElementById('modal-desc').textContent = "Kamu bisa menutup tab browser ini kapan saja atau kembali menjelajah bersama Bima.";
+    document.getElementById('modal-speak-btn').onclick = () => speakText("Terima kasih sudah berpetualang bersama Bima!", true);
+    document.getElementById('modal-actions').innerHTML = `<button class="btn btn-primary" onclick="closeModal()">Kembali ke Permainan</button>`;
+    document.getElementById('modal-overlay').classList.add('active');
+  }
+
+  function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, tag => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[tag]));
+  }
+
+  renderSlide();
+</script>
+</body>
+</html>
